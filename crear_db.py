@@ -8,7 +8,7 @@ carpeta_actual = os.path.dirname(os.path.abspath(__file__))
 ruta_base_dades = os.path.join(carpeta_actual, 'meu_calendari.db')
 
 print(f"--- INFO ---")
-print(f"Carpeta del script: {carpeta_actual}")
+print(f"Carpeta del script: {carpeta_actual}") 
 print(f"Fitxer que es crearà: {ruta_base_dades}")
 print(f"------------")
 
@@ -22,6 +22,17 @@ try:
         CREATE TABLE IF NOT EXISTS calendaris (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nom TEXT NOT NULL
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS esdeveniments    (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL,
+            data TEXT NOT NULL,
+            hora TEXT NOT NULL,
+            calendari_id INTEGER,
+            FOREIGN KEY (calendari_id) REFERENCES calendaris(id)
         )
     ''')
 
