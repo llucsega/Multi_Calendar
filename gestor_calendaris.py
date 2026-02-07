@@ -1,30 +1,3 @@
-"""
---- GUIA RÀPIDA DE SQLITE3 ---
-
-1. .cursor()
-   És com un "punter" o un "obrer" que enviem a la base de dades. 
-   La connexió obre la porta del fitxer, però el cursor és qui 
-   executa les ordres (execute) i qui ens porta els resultats.
-
-2. .execute("ORDRE SQL", (paràmetres,))
-   Serveix per enviar una ordre a la base de dades. 
-   Sempre usem '?' per seguretat en lloc de variables directes.
-
-3. .fetchall()
-   S'usa després d'un SELECT. Recupera TOTES les files que ha trobat 
-   la consulta i les guarda en una llista de Python.
-   Cada fila de la llista és una 'tupla' (com una llista que no es pot canviar).
-
-4. .fetchone()
-   Igual que fetchall, però només ens porta la primera fila que trobi.
-
-5. .commit()
-   Molt important! Si fas canvis (INSERT, UPDATE, DELETE), 
-   els canvis no es guarden al disc dur fins que no fas .commit().
-   És com prémer el botó "Guardar" del Word.
-"""
-
-
 import sqlite3
 import os
 
@@ -35,7 +8,7 @@ ruta_db = os.path.join(carpeta_actual, 'meu_calendari.db')
 connexio = sqlite3.connect(ruta_db)
 cursor = connexio.cursor()
 
-
+# Ho posem tot en funcions llogiques per una millor organitzacio ara i futura
 
 def mostrar_menu():
     print("\n\n---  GESTOR DE CALENDARIS ---")
@@ -52,67 +25,64 @@ def mostrar_menu_esdeveniments():
     print("3. Tornar al menú principal\n")
     return input("Tria una opció: ")
 
+def llistar_els_calendaris():
+    cursor.execute("SELECT * FROM calendaris")
+    return cursor.fetchall()        
 
+def afegir_calendari(nom):
+    cursor.execute("INSERT INTO calendaris (nom) VALUES (?)", (nom,))
+    connexio.commit()
+    return
+
+def Hi_ha_esdeveniments():
+    cursor.execute("SELECT calendari_id FROM esdeveniments")
+    Hi_ha_esdeveniments_pregunta = cursor.fetchall()
+    return Hi_ha_esdeveniments_pregunta
+
+def Veure_esdeveniments(id_calendari):
+    cursor.execute("SELECT * FROM esdeveniments WHERE calendari_id = (?)", (id_calendari,))
+    esdeveniments = cursor.fetchall()
+    return esdeveniments
+    
 
 while True:
+   
     opcio = mostrar_menu()
-
+    
     if opcio == "1":
-        # LLISTAR
-        cursor.execute("SELECT * FROM calendaris")
-        files = cursor.fetchall()
-        
-        if not files:
+        llista = llistar_els_calendaris()
+        if not llista:
             print("\nNo tens cap calendari creat encara.")
             input("\nEnter per continuar")
-        
         else:
             print("\nELS TEUS CALENDARIS:")
-            for f in files:
+            for f in llista:
                 print(f"[{f[0]}] - {f[1]}")
             input("\nEnter per continuar")         
-    
-    
+        
     elif opcio == "2":
-        # AFEGIR
-        nom = input("\nNom del nou calendari: ")
-        cursor.execute("INSERT INTO calendaris (nom) VALUES (?)", (nom,))
-        connexio.commit()
+        nom = input("\nNom del nou calendari: ")  
+        afegir_calendari(nom)   
         print(f"\n'{nom}' guardat!")
         input("\nEnter per continuar")
 
-    
     elif opcio == "3":
-        #Menu esdeveniments
         while True:
             opcio_calendari = mostrar_menu_esdeveniments()
             
-            if opcio_calendari == "1":
-                   
-                    # Primer mirem si el usuari te calendaris on puguin haver esdeveniments
-                    cursor.execute("SELECT calendari_id FROM esdeveniments")
-                    Hi_ha_esdeveniments = cursor.fetchall()
-                    
-                    if not Hi_ha_esdeveniments:
-                        print("\nEncara no tens cap calendari o esdeveniments per veurels")
+            if opcio_calendari == "1":    
+                if not Hi_ha_esdeveniments():
+                    print("\nEncara no tens cap calendari o esdeveniments per veurels")
+                    input("\nEnter per continuar")
+                                       
+                else:
+                    id_calendari = input("\nNumero del calendari d'on vols veure els esdeveniments: ")    
+                    for e in Veure_esdeveniments(id_calendari):
+                        print(f"\n[{e[0]}]- {e[1]} el {e[2]} a les {e[3]}")
                         input("\nEnter per continuar")
                     
-                    # Aqui mostrem els esdeveniments del calendari que vulgui
-                    else:
-                        id_calendari = input("\nID del calendari que vols veure: ")
-                    
-                        cursor.execute("SELECT * FROM esdeveniments WHERE calendari_id = (?)", 
-                                    (id_calendari,)
-                        )
-                        
-                        esdeveniments = cursor.fetchall()
-                        
-                        for e in esdeveniments:
-                            print(f"\n[{e[0]}]- {e[1]} el {e[2]} a les {e[3]}")
-                            input("\nEnter per continuar")
-                    
             elif opcio_calendari == "2":
-                
+                3
                 cursor.execute("SELECT id FROM calendaris")
                 Hi_ha_calendari = cursor.fetchall()
                     
