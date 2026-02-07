@@ -38,10 +38,10 @@ try:
 
     connexio.commit()
     connexio.close()
-    print("✅ Èxit: Base de dades creada correctament!")
+    print("Èxit: Base de dades creada correctament!")
 
 except Exception as e:
-    print(f"❌ Error: {e}")
+    print(f"Error: {e}")
     
     
     
@@ -55,9 +55,5 @@ os.path.abspath(__file__): Això li diu a Python: "Busca la ruta completa d'aque
 os.path.dirname(...): Això li diu: "D'aquesta ruta, queda't només amb la carpeta, ignora el nom del fitxer".
 
 os.path.join(...): Això serveix per ajuntar la carpeta amb el nom del fitxer (meu_calendari.db) de forma segura, 
-
-ja que Windows fa servir barres tipus \ i Mac/Linux fan servir /.
-
-És una forma professional de programar: mai deixis que el programa "triï" on guardar les coses, digues-li tu sempre la ruta absoluta.
 
 """
