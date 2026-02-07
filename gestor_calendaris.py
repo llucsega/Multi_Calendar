@@ -39,11 +39,12 @@ def mostrar_menu():
     print("\n---  GESTOR DE CALENDARIS ---")
     print("1. Veure tots els calendaris")
     print("2. Crear un nou calendari")
-    print("3. Sortir")
+    print("3. Menu esdeveniments")
+    print("4. Sortir")
     return input("Tria una opció: ")
 
 
-def mostrar_menu_calendari():
+def mostrar_menu_esdeveniments():
     print("\nOpcions:")
     print("1. Veure esdeveniments d'un calendari")
     print("2. Crear nou esdeveniment")
@@ -60,41 +61,17 @@ while True:
         cursor.execute("SELECT * FROM calendaris")
         files = cursor.fetchall()
         
-        print("\nELS TEUS CALENDARIS:")
-        for f in files:
-            print(f"[{f[0]}] - {f[1]}")
+        if not files:
+            print("No tens cap calendari creat encara.")
         
-        while True:
+        else:
+            print("\nELS TEUS CALENDARIS:")
+            for f in files:
+                print(f"[{f[0]}] - {f[1]}")
             
-            opcio_calendari = mostrar_menu_calendari()
-            
-            if opcio_calendari == "1":
-                id_calendari = input("\nID del calendari que vols veure: ")
-                cursor.execute("SELECT * FROM esdeveniments WHERE calendari_id = (?)", 
-                               (id_calendari,)
-                )
-                
-                esdeveniments = cursor.fetchall()
-                for e in esdeveniments:
-                    print(f"\n[{e[0]}]- {e[1]} el {e[2]} a les {e[3]}")
-                
-            if opcio_calendari == "2":
-                id_calendari = input("ID del calendari on vols afegir l'esdeveniment: ")
-                nom_esdeveniment = input("Nom de l'esdeveniment: ")
-                data_esdeveniment = input("Data: ")
-                hora_esdeveniment = input("Hora: ")
-                
-                cursor.execute(
-                    "INSERT INTO esdeveniments (nom, data, hora, calendari_id) VALUES (?, ?, ?, ?)", 
-                    (nom_esdeveniment, data_esdeveniment, hora_esdeveniment, id_calendari)
-                )
-                connexio.commit()
-                print(f"Esdeveniment '{nom_esdeveniment}' afegit al calendari ID {id_calendari}!")
-                
-            if opcio_calendari == "3":
-                break
-            
-                
+        
+    
+    
     elif opcio == "2":
         # AFEGIR
         nom = input("Nom del nou calendari: ")
@@ -102,7 +79,43 @@ while True:
         connexio.commit()
         print(f"'{nom}' guardat!")
 
+    
+    
     elif opcio == "3":
+        #Menu esdeveniments
+        while True:
+            
+            opcio_calendari = mostrar_menu_esdeveniments()
+            
+            if opcio_calendari == "1":
+                    id_calendari = input("\nID del calendari que vols veure: ")
+                    cursor.execute("SELECT * FROM esdeveniments WHERE calendari_id = (?)", 
+                                (id_calendari,)
+                    )
+                    
+                    esdeveniments = cursor.fetchall()
+                    for e in esdeveniments:
+                        print(f"\n[{e[0]}]- {e[1]} el {e[2]} a les {e[3]}")
+                    
+            if opcio_calendari == "2":
+                    id_calendari = input("Numero del calendari on vols afegir l'esdeveniment: ")
+                    nom_esdeveniment = input("Nom de l'esdeveniment: ")
+                    data_esdeveniment = input("Data: ")
+                    hora_esdeveniment = input("Hora: ")
+                    
+                    cursor.execute(
+                        "INSERT INTO esdeveniments (nom, data, hora, calendari_id) VALUES (?, ?, ?, ?)", 
+                        (nom_esdeveniment, data_esdeveniment, hora_esdeveniment, id_calendari)
+                    )
+                    connexio.commit()
+                    print(f"Esdeveniment '{nom_esdeveniment}' afegit al calendari ID {id_calendari}!")
+                    
+            if opcio_calendari == "3":
+                    break
+        
+        
+    
+    elif opcio == "4":
         print("Adéu!")
         connexio.close()
         break 
