@@ -9,7 +9,7 @@ ruta_base_dades = os.path.join(carpeta_actual, 'meu_calendari.db')
 
 # Mostrem si l'usuari ja te la base de dades al dispositiu i li indiquem
 if os.path.exists(ruta_base_dades):
-    print("Ja tens la base de dades creada al teu dispositiu")
+    print("\nJa tens la base de dades creada al teu dispositiu\n")
     exit()
 
 print(f"--- INFO ---")
